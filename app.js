@@ -44,7 +44,7 @@ app
   .post(function (req, res) {
     const newArticle = new Article({
       title: req.body.title,
-      content: req.body.connect,
+      content: req.body.content,
     });
     newArticle.save(function (err) {
       if (!err) {
@@ -78,6 +78,47 @@ app
           res.send(foundArticle);
         } else {
           res.send("No article matching that title was found");
+        }
+      }
+    );
+  })
+
+  .put(function (req, res) {
+    Article.updateOne(
+      { title: req.params.articleTitle },
+      { title: req.body.title, content: req.body.content },
+      { overwrite: true },
+      function (err) {
+        if (!err) {
+          res.send("Successfully updated article");
+        } else {
+          res.send("No article was updated")
+        }
+      }
+    );
+  })
+  .patch(function (req, res) {
+    Article.updateOne(
+      { title: req.params.articleTitle },
+      { $set: req.body },
+      function (err) {
+        if (!err) {
+          res.send("Successfully updated article");
+        } else {
+          res.send(err)
+        }
+      }
+    );
+  })
+
+  .delete(function (req, res) {
+    Article.deleteOne(
+      { title: req.params.articleTitle },
+      function (err) {
+        if (!err) {
+          res.send("Successfully deleted corresponding article");
+        } else {
+          res.send(err)
         }
       }
     );
